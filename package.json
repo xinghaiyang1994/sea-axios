@@ -1,0 +1,25 @@
+{
+  "name": "sea-axios",
+  "version": "1.0.1",
+  "description": "axios 封装",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xinghaiyang1994/sea-axios.git"
+  },
+  "keywords": [
+    "axios"
+  ],
+  "author": "sea",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xinghaiyang1994/sea-axios/issues"
+  },
+  "homepage": "https://github.com/xinghaiyang1994/sea-axios#readme",
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
