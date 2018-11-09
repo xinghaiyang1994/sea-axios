@@ -39,22 +39,32 @@ options 参数说明（都为非必填）
 * initConfig  
     类型：Object  
     说明：提供全局 axios 扩展，可以配置官方 axios(option) 配置。
+* transformRequestFn  
+    类型：Function  
+    说明：全局请求发送前统一拦截。
     ```js
     ajaxInit({
-        transformRequest (res) {        // res 为 axios 请求信息
+        transformRequestFn (config) {        // config 为 axios 请求信息
         
             // 统一在请求前处理
+            
+            return config  // 必须有返回值
+        }
+    })
+    ```
+* transformResponseFn  
+    类型：Function  
+    说明：全局响应后统一拦截。
+    ```js
+    ajaxInit({
+        transformResponseFn (res) {        // res 为 axios 返回信息
+        
+            // 统一在返回后处理
             
             return res  // 必须有返回值
         }
     })
     ```
-* transformRequestFn  
-    类型：Function  
-    说明：全局请求发送前统一拦截。
-* transformResponseFn  
-    类型：Function  
-    说明：全局响应统一拦截。
 ## ajax 使用
 ```js
 ajax(url, options)

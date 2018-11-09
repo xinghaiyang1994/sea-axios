@@ -110,17 +110,16 @@ function ajaxInit (initOptions = {}) {
     initConfig = initOptions.initConfig                     // 全局配置
     
     // 请求发送前统一拦截
-    axios.interceptors.request.use(res => {
-
-        if (res.config && res.config.transformRequestFn) {
+    axios.interceptors.request.use(config => {
+        if (config.config && config.config.transformRequestFn) {
             // 单个请求发送前拦截
-            res.config.transformRequestFn && res.config.transformRequestFn()
+            config.config.transformRequestFn && config.config.transformRequestFn(config)
         } else {
             // 全部请求发送前拦截
-            initOptions.transformRequestFn && initOptions.transformRequestFn()
+            initOptions.transformRequestFn && initOptions.transformRequestFn(config)
         }
 
-        return res
+        return config
 
     }, tranErrorDefault)
 
@@ -129,10 +128,10 @@ function ajaxInit (initOptions = {}) {
 
         if (res.config && res.config.transformResponseFn) {
             // 单个响应拦截
-            res.config.transformResponseFn && res.config.transformResponseFn()
+            res.config.transformResponseFn && res.config.transformResponseFn(res)
         } else {
             // 全部响应拦截
-            initOptions.transformResponseFn && initOptions.transformResponseFn()
+            initOptions.transformResponseFn && initOptions.transformResponseFn(res)
         }
 
         return res
