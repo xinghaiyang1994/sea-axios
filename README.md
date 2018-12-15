@@ -36,6 +36,9 @@ options 参数说明（都为非必填）
 * initCookie  
     类型：Boolean  
     说明：所有请求是否携带 cookie 。
+* initDebug  
+    类型：Boolean  
+    说明：所有请求是否开启 debug 。
 * initConfig  
     类型：Object  
     说明：提供全局 axios 扩展，可以配置官方 axios(option) 配置。
