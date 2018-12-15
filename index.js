@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-let initTransformData, initTransformParams, initCookie, initConfig
+let initTransformData, initTransformParams, initCookie, initDebug, initConfig
 
 function json2url (data) {
     let str = '' 
@@ -35,10 +35,9 @@ function ajax (...options) {
 
     const url = ajaxOptions.url,
         method = ajaxOptions.method || ajaxOptions.type || 'get',
-        debug = ajaxOptions.debug,
         transformRequest = ajaxOptions.json ? [] : [json2url]
 
-    let timeBegin, data, withCredentials, dataType
+    let timeBegin, data, withCredentials, dataType, debug
 
     if (typeof ajaxOptions.cookie !== 'undefined') {
         withCredentials = ajaxOptions.cookie
@@ -87,15 +86,21 @@ function ajax (...options) {
 
     // 配置扩展
     config = Object.assign(config, initConfig, ajaxOptions.config)
-
+    
     // 开启 debug
+    if (typeof initDebug === 'boolean') {
+        debug = initDebug
+    }
+    if (typeof ajaxOptions.debug === 'boolean') {
+        debug = ajaxOptions.debug
+    }
     if (debug) {
         timeBegin = Date.now()
     }
 
     return axios(config).then(res => {
         if (debug) {
-            console.log(url, `${Date.now() - timeBegin}ms`, res)
+            console.log(`请求${url} 用时:${Date.now() - timeBegin}ms`, res)
         }
         return res.status === 200 ? res.data : console.log(res)
     })
@@ -107,6 +112,7 @@ function ajaxInit (initOptions = {}) {
     initTransformData = initOptions.initTransformData       // 全局 post 请求 data 处理函数
     initTransformParams = initOptions.initTransformParams   // 全局 get 请求 data 处理函数
     initCookie = initOptions.initCookie                     // 全局设置是否带 cookie
+    initDebug = initOptions.initDebug                       // 全局设置是否开启 debug
     initConfig = initOptions.initConfig                     // 全局配置
     
     // 请求发送前统一拦截
