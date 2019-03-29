@@ -1,11 +1,10 @@
 {
   "name": "sea-axios",
-  "version": "1.0.6",
+  "version": "2.0.0",
   "description": "axios 封装",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel ./index.js -o lib/index.js"
+    "build": "babel ./src/index.js -o dist/index.js"
   },
   "repository": {
     "type": "git",
