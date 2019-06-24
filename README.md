@@ -372,3 +372,25 @@ options 参数说明（只有 url 是必填，其他都是非必填。所有参�
     * transformResponseFn  
         类型：Function   
         说明：单个响应拦截。
+
+## ts 相关
+配置下 tsconfig.json 中的 paths 和 baseUrl 字段。
+```js
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "*": ["types/*"]
+    }
+  }
+}
+```
+
+根目录配置 types/sea-axios/index.d.ts
+```ts
+declare module 'dj-axios' {
+  type ajax = (config: object) => Promise<object>
+  export default function (config: object): ajax
+}
+```
