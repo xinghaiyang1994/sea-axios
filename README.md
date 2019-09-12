@@ -390,7 +390,7 @@ options 参数说明（只有 url 是必填，其他都是非必填。所有参�
 根目录配置 types/sea-axios/index.d.ts
 ```ts
 declare module 'dj-axios' {
-  type ajax = (config: object) => Promise<object>
+  type ajax = (config: object) => Promise<any>
   export default function (config: object): ajax
 }
 ```
