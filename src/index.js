@@ -52,8 +52,10 @@ function ajax (...options) {
 
      // 上传文件
     if (ajaxOptions.upload) {
+        const { config } = ajaxOptions
         data = ajaxOptions.data
         return axios.post(url, data, {
+            ...config,
             headers: {'Content-Type': 'multipart/form-data'},
             withCredentials
         }).then(res => {
