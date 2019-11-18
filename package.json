@@ -1,6 +1,6 @@
 {
   "name": "sea-axios",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "description": "axios 封装",
   "main": "dist/index.js",
   "scripts": {
@@ -23,10 +23,8 @@
     "axios": "^0.18.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "chai": "^4.2.0",
-    "koa": "^2.8.1",
-    "koa-router": "^7.4.0"
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1"
   }
 }
