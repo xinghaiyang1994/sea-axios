@@ -15,16 +15,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var initTransformData, initTransformParams, initJson, initCookie, initDebug, initConfig;
-
-function createJsonHeader() {
-  return {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-}
-
+// 拼成 url 参数格式
 function json2url(obj) {
   var arr = [];
 
@@ -33,11 +24,20 @@ function json2url(obj) {
   }
 
   return arr.join('&');
+} // 深拷贝
+
+
+function deepCopy(obj) {
+  return JSON.parse(JSON.stringify(obj));
 }
 
-function tranErrorDefault(err) {
-  return Promise.reject(err);
-}
+var initTransformData, initTransformParams, initJson, initCookie, initDebug, initConfig; // json 请求的 header
+
+var jsonHeader = {
+  headers: {
+    'Content-Type': 'application/json'
+  }
+};
 
 function ajax() {
   var _config2;
@@ -57,7 +57,8 @@ function ajax() {
   }
 
   var url = ajaxOptions.url;
-  var method = ajaxOptions.method || ajaxOptions.type || 'post';
+  var method = ajaxOptions.method || ajaxOptions.type || 'post'; // 默认 post
+
   var timeBegin, data, withCredentials, dataType, transformRequest, debug; // 是否携带 cookie
 
   if (typeof ajaxOptions.cookie !== 'undefined') {
@@ -69,9 +70,9 @@ function ajax() {
 
   if (ajaxOptions.upload) {
     var _ajaxOptions = ajaxOptions,
-        _config = _ajaxOptions.config;
-    data = ajaxOptions.data;
-    return _axios["default"].post(url, data, _objectSpread({}, _config, {
+        _config = _ajaxOptions.config,
+        _data = _ajaxOptions.data;
+    return _axios["default"].post(url, _data, _objectSpread({}, _config, {
       headers: {
         'Content-Type': 'multipart/form-data'
       },
@@ -82,6 +83,7 @@ function ajax() {
   }
 
   if (method.toLowerCase() === 'get') {
+    // get 方式
     dataType = 'params';
 
     if (ajaxOptions.transformParams) {
@@ -92,6 +94,7 @@ function ajax() {
       data = ajaxOptions.data;
     }
   } else {
+    // post 方式
     dataType = 'data';
 
     if (ajaxOptions.transformData) {
@@ -119,20 +122,23 @@ function ajax() {
     method: method
   }, _defineProperty(_config2, dataType, data), _defineProperty(_config2, "transformRequest", transformRequest), _defineProperty(_config2, "withCredentials", withCredentials), _config2); // axios 扩展
 
+  var newInitConfig = deepCopy(initConfig); // 防止 tmpInitConfig 的修改影响 initConfig
+
   if (typeof ajaxOptions.json === 'boolean') {
     if (ajaxOptions.json) {
-      config = Object.assign({}, initConfig, config, createJsonHeader(), ajaxOptions.config);
+      // json 方式设置 config ,依次合并全局 config、通用 config、json 头的 config、单个配置的 config
+      config = Object.assign({}, newInitConfig, config, deepCopy(jsonHeader), ajaxOptions.config);
     } else {
-      var tmpInitConfig = Object.assign({}, initConfig);
+      // 如果全局的 config 的 header 为 json 的 header ,则设置为表单的 header 
+      if (newInitConfig.headers && newInitConfig.headers['Content-Type'] === 'application/json') {
+        newInitConfig.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      } // 依次合并全局 config、通用 config、单个配置的 config
 
-      if (tmpInitConfig.headers && tmpInitConfig.headers['Content-Type'] === 'application/json') {
-        tmpInitConfig.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-      }
 
-      config = Object.assign({}, tmpInitConfig, config, ajaxOptions.config);
+      config = Object.assign({}, newInitConfig, config, ajaxOptions.config);
     }
   } else {
-    config = Object.assign({}, initConfig, config, ajaxOptions.config);
+    config = Object.assign({}, newInitConfig, config, ajaxOptions.config);
   } // console.log('config', config)
   // 开启 debug
 
@@ -183,7 +189,8 @@ ajax.upload = function (options) {
     upload: true
   });
   return ajax(options);
-};
+}; // 全局配置
+
 
 function ajaxInit() {
   var initOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -191,15 +198,15 @@ function ajaxInit() {
 
   initTransformParams = initOptions.initTransformParams; // 全局 get 请求 data 处理函数
 
-  initCookie = typeof initOptions.initCookie === 'undefined' ? true : initOptions.initCookie; // 全局设置是否带 cookie
+  initCookie = typeof initOptions.initCookie === 'undefined' ? true : initOptions.initCookie; // 全局设置是否带 cookie , 默认带
 
-  initJson = typeof initOptions.initJson === 'undefined' ? true : initOptions.initJson; // 全局设置按 application/json 方法请求
+  initJson = typeof initOptions.initJson === 'undefined' ? true : initOptions.initJson; // 全局设置是否按 application/json 方法请求, 默认为是
 
   initDebug = initOptions.initDebug; // 全局设置是否开启 debug
   // 全局 axios 扩展
 
   if (initJson) {
-    initConfig = Object.assign({}, createJsonHeader(), initOptions.initConfig);
+    initConfig = Object.assign({}, deepCopy(jsonHeader), initOptions.initConfig);
   } else {
     initConfig = Object.assign({}, initOptions.initConfig);
   } // console.log('initJson', initConfig)

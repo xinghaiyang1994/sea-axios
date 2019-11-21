@@ -1,4 +1,15 @@
-import axios from 'axios'
+const axios = require('axios').default
+
+let initTransformData, initTransformParams, initJson, initCookie, initDebug, initConfig
+
+// 生成 json 请求的 header
+function createJsonHeader() {
+  return {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+}
 
 // 拼成 url 参数格式
 function json2url(obj) {
@@ -7,19 +18,6 @@ function json2url(obj) {
     arr.push(`${key}=${encodeURIComponent(obj[key])}`)
   }
   return arr.join('&')
-}
-
-// 深拷贝
-function deepCopy(obj) {
-  return JSON.parse(JSON.stringify(obj))
-}
-
-let initTransformData, initTransformParams, initJson, initCookie, initDebug, initConfig
-// json 请求的 header
-const jsonHeader = {
-  headers: {
-    'Content-Type': 'application/json'
-  }
 }
 
 function ajax(...options) {
@@ -39,7 +37,7 @@ function ajax(...options) {
   }
 
   const url = ajaxOptions.url
-  const method = ajaxOptions.method || ajaxOptions.type || 'post'   // 默认 post
+  const method = ajaxOptions.method || ajaxOptions.type || 'post'
 
   let timeBegin, data, withCredentials, dataType, transformRequest, debug
 
@@ -52,7 +50,10 @@ function ajax(...options) {
 
   // 上传文件
   if (ajaxOptions.upload) {
-    const { config, data } = ajaxOptions
+    const {
+      config
+    } = ajaxOptions
+    data = ajaxOptions.data
     return axios.post(url, data, {
       ...config,
       headers: {
@@ -65,7 +66,6 @@ function ajax(...options) {
   }
 
   if (method.toLowerCase() === 'get') {
-    // get 方式
     dataType = 'params'
     if (ajaxOptions.transformParams) {
       data = ajaxOptions.transformParams(ajaxOptions.data)
@@ -75,7 +75,6 @@ function ajax(...options) {
       data = ajaxOptions.data
     }
   } else {
-    // post 方式
     dataType = 'data'
     if (ajaxOptions.transformData) {
       data = ajaxOptions.transformData(ajaxOptions.data)
@@ -103,25 +102,24 @@ function ajax(...options) {
     transformRequest,
     withCredentials,
   }
+  console.log('前config', config)
 
+  let initConfigN = JSON.parse(JSON.stringify(initConfig))
   // axios 扩展
-  const newInitConfig = deepCopy(initConfig)    // 防止 tmpInitConfig 的修改影响 initConfig
   if (typeof ajaxOptions.json === 'boolean') {
     if (ajaxOptions.json) {
-      // json 方式设置 config ,依次合并全局 config、通用 config、json 头的 config、单个配置的 config
-      config = Object.assign({}, newInitConfig, config, deepCopy(jsonHeader), ajaxOptions.config)
+      config = Object.assign({}, initConfigN, config, createJsonHeader(), ajaxOptions.config)
     } else {
-      // 如果全局的 config 的 header 为 json 的 header ,则设置为表单的 header 
-      if (newInitConfig.headers && newInitConfig.headers['Content-Type'] === 'application/json') {
-        newInitConfig.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+      let tmpInitConfig = Object.assign({}, initConfigN)
+      if (tmpInitConfig.headers && tmpInitConfig.headers['Content-Type'] === 'application/json') {
+        tmpInitConfig.headers['Content-Type'] = 'application/x-www-form-urlencoded'
       }
-      // 依次合并全局 config、通用 config、单个配置的 config
-      config = Object.assign({}, newInitConfig, config, ajaxOptions.config)
+      config = Object.assign({}, tmpInitConfig, config, ajaxOptions.config)
     }
   } else {
-    config = Object.assign({}, newInitConfig, config, ajaxOptions.config)
+    config = Object.assign({}, initConfigN, config, ajaxOptions.config)
   }
-  // console.log('config', config)
+  console.log('config', config)
 
   // 开启 debug
   if (typeof initDebug === 'boolean') {
@@ -140,6 +138,7 @@ function ajax(...options) {
     }
     return res.status === 200 ? res.data : console.log(res)
   })
+
 }
 
 // 表单方式 get 的快捷方式
@@ -169,21 +168,20 @@ ajax.upload = options => {
   return ajax(options)
 }
 
-// 全局配置
 function ajaxInit(initOptions = {}) {
-  initTransformData = initOptions.initTransformData   // 全局 post 请求 data 处理函数
-  initTransformParams = initOptions.initTransformParams   // 全局 get 请求 data 处理函数
-  initCookie = typeof initOptions.initCookie === 'undefined' ? true : initOptions.initCookie    // 全局设置是否带 cookie , 默认带
-  initJson = typeof initOptions.initJson === 'undefined' ? true : initOptions.initJson    // 全局设置是否按 application/json 方法请求, 默认为是
-  initDebug = initOptions.initDebug   // 全局设置是否开启 debug
+  initTransformData = initOptions.initTransformData // 全局 post 请求 data 处理函数
+  initTransformParams = initOptions.initTransformParams // 全局 get 请求 data 处理函数
+  initCookie = typeof initOptions.initCookie === 'undefined' ? true : initOptions.initCookie // 全局设置是否带 cookie
+  initJson = typeof initOptions.initJson === 'undefined' ? true : initOptions.initJson // 全局设置按 application/json 方法请求
+  initDebug = initOptions.initDebug // 全局设置是否开启 debug
 
   // 全局 axios 扩展
   if (initJson) {
-    initConfig = Object.assign({}, deepCopy(jsonHeader), initOptions.initConfig)
+    initConfig = Object.assign({}, createJsonHeader(), initOptions.initConfig)
   } else {
     initConfig = Object.assign({}, initOptions.initConfig)
   }
-  // console.log('initJson', initConfig)
+  console.log('initJson', initConfig)
 
   // 请求发送前统一拦截
   axios.interceptors.request.use(config => {
@@ -220,4 +218,4 @@ function ajaxInit(initOptions = {}) {
   return ajax
 }
 
-export default ajaxInit
+module.exports = ajaxInit

@@ -4,7 +4,8 @@
   "description": "axios 封装",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel ./src/index.js -o dist/index.js"
+    "build": "babel ./src/index.js -o dist/index.js",
+    "testServer": "nodemon test/server/app.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,12 @@
   "devDependencies": {
     "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.2",
-    "@babel/preset-env": "^7.7.1"
+    "@babel/preset-env": "^7.7.1",
+    "chai": "^4.2.0",
+    "form-data": "^3.0.0",
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-router": "^7.4.0",
+    "koa2-cors": "^2.0.6"
   }
 }
