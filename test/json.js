@@ -7,8 +7,7 @@ const FormData = require('form-data')
 const readFile = util.promisify(fs.readFile)
 
 
-
-const ajaxInt = require('../dist/index').default
+const ajaxInt = require('../dist/index').default()
 const ajax = ajaxInt()
 const { 
   JSON_GET, 
@@ -32,7 +31,7 @@ describe('Content-Type 为 application/json 的请求', function () {
     name: 'sea'
   }
   it(`get`, async function () {
-    let resData = await ajax({
+    const resData = await ajax({
       url: JSON_GET,
       type: 'get',
       data
@@ -40,37 +39,48 @@ describe('Content-Type 为 application/json 的请求', function () {
     expect(data.name).to.be.equal(resData.name)
   })
   it(`get 简写ajax.get()`, async function () {
-    let resData = await ajax.get({
+    const resData = await ajax.get({
       url: JSON_GET,
       data
     })
     expect(data.name).to.be.equal(resData.name)
   })
   it(`post`, async function () {
-    let resData = await ajax({
+    const resData = await ajax({
       url: JSON_POST,
       data
     })
     expect(data.name).to.be.equal(resData.name)
   })
   it(`post 简写ajax.post()`, async function () {
-    let resData = await ajax.post({
+    const resData = await ajax.post({
       url: JSON_POST,
       data
     })
     expect(data.name).to.be.equal(resData.name)
   })
-  it(`upload`, async function () {
-    const file = await readFile(path.join(__dirname, './data/test.jpg'))
-    const data = new FormData()
-    data.append('file', file)
-    let resData = await ajax({
-      url: UPLOAD,
-      upload: true,
+  it(`post initJson 为 false, json 为 true`, async function () {
+    const ajax = ajaxInt({
+      initJson: false
+    })
+    const resData = await ajax({
+      url: JSON_POST,
+      json: true,
       data
     })
     expect(data.name).to.be.equal(resData.name)
   })
+  // it(`upload`, async function () {
+  //   const file = await readFile(path.join(__dirname, './data/test.jpg'))
+  //   const data = new FormData()
+  //   data.append('file', file)
+  //   const resData = await ajax({
+  //     url: UPLOAD,
+  //     upload: true,
+  //     data
+  //   })
+  //   expect(data.name).to.be.equal(resData.name)
+  // })
 
 
 })
@@ -78,5 +88,3 @@ describe('Content-Type 为 application/json 的请求', function () {
 after(function () {
   child.kill()
 })
-
-
