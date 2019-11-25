@@ -4,7 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const FormData = require('form-data')
 
-const ajaxInt = require('../dist/index').default
+const ajaxInt = require('../dist/index').default()
 const ajax = ajaxInt()
 const { 
   JSON_GET, 
