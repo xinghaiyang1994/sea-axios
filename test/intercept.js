@@ -7,7 +7,8 @@ const {
   INTERCEPT_INITTRANSFORMRESPONSEFN,
   INTERCEPT_INITTRANSFORMREQUESTFN,
   INTERCEPT_INITTRANSFORMPARAMS,
-  INTERCEPT_INITTRANSFORMDATA
+  INTERCEPT_INITTRANSFORMDATA,
+  INTERCEPT_INITTRANSFORMRESPONSEERRORFN
 } = require('./config/api')
 
 let child
@@ -260,6 +261,36 @@ describe('拦截函数', function () {
         }
       })
       expect(resDataTwo.name).to.be.equal(DATA.TWO)
+  
+    })
+  })
+
+  describe('错误拦截', function () {
+    it(`initTransformResponseErrorFn`, async function () {
+      const STATUS = {   // 状态
+        ERROR: 'error',
+        NO_ERROR: 'no_error'
+      }
+      let STATUS_MESSAGE
+      const ajax = ajaxInt({
+        initTransformResponseErrorFn() {
+          STATUS_MESSAGE = STATUS.ERROR
+        }
+      })
+      
+      // 失败请求
+      await ajax({
+        url: INTERCEPT_INITTRANSFORMRESPONSEERRORFN,
+      }).catch(() => {})
+      expect(STATUS_MESSAGE).to.be.equal(STATUS.ERROR)
+  
+      // 成功请求
+      await ajax({
+        url: INTERCEPT_INITTRANSFORMDATA
+      }).then(() => {
+        STATUS_MESSAGE = STATUS.NO_ERROR
+      })
+      expect(STATUS_MESSAGE).to.be.equal(STATUS.NO_ERROR)
   
     })
   })

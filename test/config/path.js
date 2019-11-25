@@ -9,6 +9,7 @@ const PATH = {
   INTERCEPT_INITTRANSFORMREQUESTFN: '/intercept/initTransformRequestFn',
   INTERCEPT_INITTRANSFORMPARAMS: '/intercept/initTransformParams',
   INTERCEPT_INITTRANSFORMDATA: '/intercept/initTransformData',
+  INTERCEPT_INITTRANSFORMRESPONSEERRORFN: '/intercept/initTransformResponseErrorFn',
 }
 
 module.exports = PATH

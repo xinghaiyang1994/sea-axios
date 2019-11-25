@@ -29,7 +29,7 @@ describe('Content-Type 为 application/x-www-form-urlencoded 的请求', functio
   it(`get`, async function () {
     const resData = await ajax({
       url: FORM_GET,
-      type: 'get',
+      method: 'get',
       data
     })
     expect(data.name).to.be.equal(resData.name)

@@ -73,12 +73,12 @@ var fn = function fn() {
       var _ajaxOptions = ajaxOptions,
           _config = _ajaxOptions.config,
           _data = _ajaxOptions.data;
-      return _axios["default"].post(url, _data, _objectSpread({}, _config, {
+      return _axios["default"].post(url, _data, _objectSpread({
         headers: {
           'Content-Type': 'multipart/form-data'
         },
         withCredentials: withCredentials
-      })).then(function (res) {
+      }, _config)).then(function (res) {
         return res.status === 200 ? res.data : console.log(res);
       });
     }

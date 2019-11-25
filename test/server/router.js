@@ -31,7 +31,7 @@ module.exports = function(app) {
   // 上传文件
   router.post(UPLOAD, ctx => {
     console.log(ctx.request.files)
-    return ctx.body = 1
+    return ctx.body = ctx.request.files.file.name
   })
 
   // form get 请求

@@ -55,11 +55,11 @@ const fn = function() {
     if (ajaxOptions.upload) {
       const { config, data } = ajaxOptions
       return axios.post(url, data, {
-        ...config,
         headers: {
           'Content-Type': 'multipart/form-data'
         },
-        withCredentials
+        withCredentials,
+        ...config
       }).then(res => {
         return res.status === 200 ? res.data : console.log(res)
       })

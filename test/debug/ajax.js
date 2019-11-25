@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 
-const ajaxInit = function() {
+const fn = function() {
   
   // 拼成 url 参数格式
   function json2url(obj) {
@@ -56,11 +56,11 @@ const ajaxInit = function() {
     if (ajaxOptions.upload) {
       const { config, data } = ajaxOptions
       return axios.post(url, data, {
-        ...config,
         headers: {
           'Content-Type': 'multipart/form-data'
         },
-        withCredentials
+        withCredentials,
+        ...config
       }).then(res => {
         return res.status === 200 ? res.data : console.log(res)
       })
@@ -123,7 +123,7 @@ const ajaxInit = function() {
     } else {
       config = Object.assign({}, newInitConfig, config, ajaxOptions.config)
     }
-    // console.log('config', config)
+    console.log('config', config)
   
     // 开启 debug
     if (typeof initDebug === 'boolean') {
@@ -222,4 +222,4 @@ const ajaxInit = function() {
   return ajaxInit
 }
 
-module.exports = ajaxInit
+module.exports = fn

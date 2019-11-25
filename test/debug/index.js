@@ -1,42 +1,41 @@
-const ajaxInt = require('../../dist').default
+const ajaxInt = require('../../dist').default()
 const path = require('path')
-const http = require('http')
 const fs = require('fs')
-const util = require('util')
 const FormData = require('form-data')
-const readFile = util.promisify(fs.readFile)
 const axios = require('axios')
 
 const ajax = ajaxInt()
 
 async function a() {
   const file = await fs.createReadStream(path.join(__dirname, '../data/test.jpg'))
+  console.log(file)
   const data = new FormData()
   data.append('file', file)
 
-  // data.submit('http://localhost:3100/upload', function(err, res) {
-  //   // res – response object (http.IncomingMessage)  //
-  //   console.log(res)
-  //   res.resume();
-  // });
-
-
   // console.log(data)
+  // console.log(data.getHeaders())
   let resData = await ajax({
     url: 'http://localhost:3100/upload',
     upload: true,
-    data
+    data,
+    config: {
+      headers: {
+        ...data.getHeaders()
+      }
+    }
   }).catch(err => {
-    console.log(err)
+    console.log('err')
   })
-  // console.log(resData)
-  // console.log(data)
+  console.log(resData)
+
+
   // axios.post('http://localhost:3100/upload', data, {
   //   headers: {
-  //     'Content-Type': 'multipart/form-data'
+  //     ...data.getHeaders()
   //   }
   // }).then(res => {
   //   console.log('z', res.data)
   // })
 }
+
 a()
