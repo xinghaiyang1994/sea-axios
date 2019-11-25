@@ -2,7 +2,7 @@ const expect = require('chai').expect
 const childProcess = require('child_process')
 const path = require('path')
 
-const ajaxInt = require('../dist/index').default()
+const ajaxInt = require('../dist/index').default
 const { 
   INTERCEPT_INITTRANSFORMRESPONSEFN,
   INTERCEPT_INITTRANSFORMREQUESTFN,
